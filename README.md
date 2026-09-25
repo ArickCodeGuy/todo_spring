@@ -10,7 +10,8 @@ Simple spring application for creating and modifying todo lists
 
 ## Non functional
 
-Each user have list of todo lists
+Each user have list of todo lists.
+
 Users can:
 
 - Create new one
