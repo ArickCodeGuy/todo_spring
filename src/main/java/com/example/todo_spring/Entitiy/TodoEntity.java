@@ -8,11 +8,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+// @Data is not used on JPA entities: its equals/hashCode/toString would touch
+// the lazy `user` association and recurse through user.todos.
 @Entity
 @Table(name = "TodoItem")
-@Data
+@Getter
+@Setter
 public class TodoEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

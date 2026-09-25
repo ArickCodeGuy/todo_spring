@@ -1,12 +1,9 @@
 package com.example.todo_spring.Controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,31 +33,41 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto authRequest) {
-    Optional<UserEntity> userOptional = userRepository.findUser(authRequest.username(), authRequest.password());
-
-    if (userOptional.isEmpty()) {
+    if (!isValid(authRequest)) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    return ResponseEntity.ok(new AuthResponseDto(jwtHelper.createJwt(authRequest.username(), List.of())));
+    // Passwords are stored as BCrypt hashes, so they have to be checked with the
+    // same encoder; they cannot be compared inside an SQL query.
+    UserEntity user = userRepository.findByUsername(authRequest.username().trim());
+    if (user == null || !bCryptPasswordEncoder.matches(authRequest.password(), user.getPassword())) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    return ResponseEntity.ok(new AuthResponseDto(jwtHelper.createJwt(user.getUsername(), List.of())));
   }
 
   @PostMapping("/signup")
   public ResponseEntity<AuthResponseDto> signup(@RequestBody AuthRequestDto authRequest) {
-    UserEntity user = new UserEntity(null, authRequest.username().trim(),
-        bCryptPasswordEncoder.encode(authRequest.password()));
-
-    if (userRepository.existsByUsername(user.getUsername())) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    if (!isValid(authRequest)) {
+      return ResponseEntity.badRequest().build();
     }
 
+    String username = authRequest.username().trim();
+    if (userRepository.existsByUsername(username)) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    UserEntity user = new UserEntity(null, username, bCryptPasswordEncoder.encode(authRequest.password()));
     userRepository.save(user);
 
-    return ResponseEntity.ok(new AuthResponseDto(jwtHelper.createJwt(authRequest.username(), List.of())));
+    // Use the trimmed name: it is what is stored and what TodoController looks up.
+    return ResponseEntity.ok(new AuthResponseDto(jwtHelper.createJwt(username, List.of())));
   }
 
-  public UserEntity getCurrentUser(
-      @AuthenticationPrincipal UserDetails userDetails) {
-    return userRepository.findByUsername(userDetails.getUsername());
+  private static boolean isValid(AuthRequestDto authRequest) {
+    return authRequest != null
+        && authRequest.username() != null && !authRequest.username().isBlank()
+        && authRequest.password() != null && !authRequest.password().isEmpty();
   }
 }

@@ -2,6 +2,7 @@ package com.example.todo_spring.Config;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
@@ -38,7 +39,16 @@ public class JwtHelper {
         .build()
         .verify(token);
 
-    List<SimpleGrantedAuthority> roles = jwt.getClaim(ROLES).asList(String.class).stream()
+    if (jwt.getSubject() == null || jwt.getSubject().isBlank()) {
+      throw new JWTVerificationException("Token has no subject");
+    }
+
+    List<String> roleNames = jwt.getClaim(ROLES).asList(String.class);
+    if (roleNames == null) {
+      roleNames = List.of();
+    }
+
+    List<SimpleGrantedAuthority> roles = roleNames.stream()
         .map(SimpleGrantedAuthority::new)
         .toList();
 

@@ -25,7 +25,8 @@ Table `TodoItem`:
 - id
 - name
 - content
-- user_id
+- isDone
+- userId
 
 - Auth with jwt
 - Fetch list of todos for a given user
@@ -40,26 +41,27 @@ Table `TodoItem`:
 #### Controllers And Api:
 
 - `AuthController`
-  - `/signup` with only `username` and `password`
-  - `/auth` with `username` and `password`
+  - POST `/api/v1/auth/signup` with only `username` and `password`
+  - POST `/api/v1/auth/login` with `username` and `password`
 - `TodoController`
   - GET `/api/v1/todo/all`. (fetch all)
   - GET `/api/v1/todo/{id}`. (fetch full todo by id)
-  - POST `/api/v1/create`. (create todo)
-  - POST `/api/v1/todo/update/{id}`. (update todo content)
-  - POST `/api/v1/todo/done/{id}`. (mark todo as read only)
+  - POST `/api/v1/todo/create`. (create todo)
+  - PUT `/api/v1/todo/update/{id}`. (update todo content)
+  - POST `/api/v1/todo/done/{id}`. (mark todo as done, it becomes read only)
   - DELETE `/api/v1/todo/delete/{id}`. (delete todo item)
 
 ### Testing
 
-Optional
-
-Test REST `api`
+Run with `./mvnw test` (`mvnw.cmd test` on Windows). Tests use an in-memory H2
+database (`src/test/resources/application.properties`), so PostgreSQL is not needed.
 
 - `AuthController`
   - signup
   - login
+  - JWT handling
 - `TodoController`
   - create todo
   - update todo
+  - mark as done
   - delete todo

@@ -8,6 +8,6 @@ public record TodoFullDto(Long id, String title, String content, boolean isDone)
   }
 
   public TodoFullDto(TodoEntity todo) {
-    this(todo.getId(), todo.getTitle(), todo.getContent(), todo.isDone() || false);
+    this(todo.getId(), todo.getTitle(), todo.getContent(), todo.isDone());
   }
 }
