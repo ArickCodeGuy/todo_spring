@@ -14,29 +14,21 @@ Users can:
 
 ### Functional
 
-Table `TodoUser`
+#### Table entities
+
+`TodoUser`:
 
 - id
 - username
 - password
 
-Table `TodoItem`:
+`TodoItem`:
 
 - id
 - name
 - content
 - isDone
 - userId
-
-- Auth with jwt
-- Fetch list of todos for a given user
-- Todo actions:
-  - Fetch list (no content)
-  - Fetch full todo info
-  - Update
-  - Create
-  - Mark as done
-  - Delete
 
 #### Controllers And Api:
 
