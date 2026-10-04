@@ -1,10 +1,17 @@
 # Todo spring
 
-## Back
+Simple spring application for creating and modifying todo lists
 
-### Non functional
+- Java
+- Spring-boot
+- Spring-security
+- Junit
+- PostgreSQL
 
-Each user have list of todo lists
+## Non functional
+
+Each user have list of todo lists.
+
 Users can:
 
 - Create new one
@@ -12,9 +19,9 @@ Users can:
 - Delete todos
 - Mark todo list as finished
 
-### Functional
+## Functional
 
-#### Table entities
+### Table entities
 
 `TodoUser`:
 
@@ -30,7 +37,7 @@ Users can:
 - isDone
 - userId
 
-#### Controllers And Api:
+### Controllers And Api:
 
 - `AuthController`
   - POST `/api/v1/auth/signup` with only `username` and `password`
@@ -43,7 +50,7 @@ Users can:
   - POST `/api/v1/todo/done/{id}`. (mark todo as done, it becomes read only)
   - DELETE `/api/v1/todo/delete/{id}`. (delete todo item)
 
-### Testing
+## Testing
 
 Run with `./mvnw test` (`mvnw.cmd test` on Windows). Tests use an in-memory H2
 database (`src/test/resources/application.properties`), so PostgreSQL is not needed.
