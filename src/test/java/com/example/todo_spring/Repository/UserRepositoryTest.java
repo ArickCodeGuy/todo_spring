@@ -16,7 +16,7 @@ public class UserRepositoryTest {
   @Test
   @DisplayName("Should return true when user exists. UserRepositoryTest.testExistById")
   public void testExistsById() {
-    UserEntity userEntity = new UserEntity(null, "test_user", "test_password");
+    UserEntity userEntity = new UserEntity("test_user", "test_password");
     UserEntity savedUser = userRepository.save(userEntity);
 
     boolean exists = userRepository.existsById(savedUser.getId());

@@ -58,7 +58,7 @@ public class AuthController {
       return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
-    UserEntity user = new UserEntity(null, username, bCryptPasswordEncoder.encode(authRequest.password()));
+    UserEntity user = new UserEntity(username, bCryptPasswordEncoder.encode(authRequest.password()));
     userRepository.save(user);
 
     // Use the trimmed name: it is what is stored and what TodoController looks up.
