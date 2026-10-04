@@ -43,7 +43,7 @@ abstract class ApiTestBase {
   }
 
   protected static String todoJson(String title, String content, boolean isDone) {
-    return "{\"title\":\"" + title + "\",\"content\":\"" + content + "\",\"isDone\":\"" + isDone + "\"}";
+    return "{\"title\":\"" + title + "\",\"content\":\"" + content + "\",\"isDone\":" + isDone + "}";
   }
 
   protected static String bearer(String token) {

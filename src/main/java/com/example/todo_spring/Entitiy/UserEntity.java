@@ -1,7 +1,12 @@
 package com.example.todo_spring.Entitiy;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,6 +39,19 @@ public class UserEntity {
 
   @Column(nullable = false)
   private String password;
+
+  // Filled in by Hibernate: created_at on insert, updated_at on every update.
+  // The column default fills existing rows when ddl-auto=update adds the columns
+  // to a table that already has data (NOT NULL would fail otherwise).
+  @CreationTimestamp
+  @ColumnDefault("CURRENT_TIMESTAMP")
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private Instant createdAt;
+
+  @UpdateTimestamp
+  @ColumnDefault("CURRENT_TIMESTAMP")
+  @Column(name = "updated_at", nullable = false)
+  private Instant updatedAt;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<TodoEntity> todos = new ArrayList<>();

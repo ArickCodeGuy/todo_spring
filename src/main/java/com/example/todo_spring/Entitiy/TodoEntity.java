@@ -1,5 +1,12 @@
 package com.example.todo_spring.Entitiy;
 
+import java.time.Instant;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +31,19 @@ public class TodoEntity {
   private String title;
   private String content;
   private boolean isDone;
+
+  // Filled in by Hibernate: created_at on insert, updated_at on every update.
+  // The column default fills existing rows when ddl-auto=update adds the columns
+  // to a table that already has data (NOT NULL would fail otherwise).
+  @CreationTimestamp
+  @ColumnDefault("CURRENT_TIMESTAMP")
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private Instant createdAt;
+
+  @UpdateTimestamp
+  @ColumnDefault("CURRENT_TIMESTAMP")
+  @Column(name = "updated_at", nullable = false)
+  private Instant updatedAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)

@@ -37,6 +37,8 @@ class AuthControllerTest extends ApiTestBase {
       assertThat(saved).isNotNull();
       assertThat(saved.getPassword()).isNotEqualTo("secret123");
       assertThat(passwordEncoder.matches("secret123", saved.getPassword())).isTrue();
+      assertThat(saved.getCreatedAt()).isNotNull();
+      assertThat(saved.getUpdatedAt()).isNotNull();
     }
 
     @Test

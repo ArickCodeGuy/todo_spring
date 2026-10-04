@@ -55,6 +55,8 @@ class TodoControllerTest extends ApiTestBase {
       assertThat(todos.get(0).getTitle()).isEqualTo("Buy milk");
       assertThat(todos.get(0).getContent()).isEqualTo("2 liters");
       assertThat(todos.get(0).isDone()).isFalse();
+      assertThat(todos.get(0).getCreatedAt()).isNotNull();
+      assertThat(todos.get(0).getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -105,6 +107,25 @@ class TodoControllerTest extends ApiTestBase {
       TodoEntity todo = findTodo(id);
       assertThat(todo.getTitle()).isEqualTo("New title");
       assertThat(todo.getContent()).isEqualTo("new content");
+    }
+
+    @Test
+    @DisplayName("updates updated_at and keeps created_at")
+    void updateTodoTimestamps() throws Exception {
+      Long id = createTodo(aliceToken, "Old title", "old content");
+      TodoEntity before = findTodo(id);
+
+      Thread.sleep(20); // make sure the clock moves on
+
+      mockMvc.perform(put("/api/v1/todo/update/" + id)
+          .header("Authorization", bearer(aliceToken))
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(todoJson("New title", "new content", false)))
+          .andExpect(status().isOk());
+
+      TodoEntity after = findTodo(id);
+      assertThat(after.getCreatedAt()).isEqualTo(before.getCreatedAt());
+      assertThat(after.getUpdatedAt()).isAfter(before.getUpdatedAt());
     }
 
     @Test
